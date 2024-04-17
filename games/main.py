@@ -1,59 +1,70 @@
-import pygame, sys
-import os
-import time
+import pygame
+import sys
 import random
+import math
+
+from classes import SpaceShip, Bullet, Aliens, Meteoric
 from pygame import mixer
 
-from classes import SpaceShip
-from classes import Bullet
-
+# Khởi tạo Pygame
 pygame.init()
 
-WIDTH = 800
+# Cài đặt kích thước cửa sổ
+WIDTH = 1300
 HEIGHT = 788
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("SpaceShip Shooter")
 pygame.mixer.pre_init(41000,-16,2,2048)
-pygame.display.set_caption("SpaceShip Shotter")
-# Khởi tạo Pygame
 
 
-# load background
-BackGround = pygame.image.load("images/backgrounds/bg.png").convert_alpha()
-BG_Move_Y = 0
-Score = 0
-Game_Control = 'Keyboard'
-TripleBullet = 'No'
-MAIN_SPACE_SHIP = SpaceShip.SpaceShip(WIDTH/2, 700, 'images/spaceShips/arcade.png')
-
-# MAIN_SPACE_SHIP1 = SpaceShip.SpaceShip(700, 680, 'images/spaceShips/spaceship.png')
-# MAIN_SPACE_SHIP2 = SpaceShip.SpaceShip(700, 680, 'images/spaceShips/spaceship1.png')
-# MAIN_SPACE_SHIP3 = SpaceShip.SpaceShip(700, 680, 'images/spaceShips/spaceship.png')
+# Load hình ảnh và âm thanh
+background = pygame.image.load("images/backgrounds/bg.png").convert_alpha()
 powerup = pygame.image.load("images/power-item/lightning.png").convert_alpha()
-#Create Live Tree
 livetree = pygame.image.load("images/power-item/livetree.png").convert_alpha()
+# Khởi tạo font
+font = pygame.font.SysFont('Arial', 32, bold=True)
 
-font=pygame.font.SysFont('Arial',32,'bold')
-font_stage=pygame.font.SysFont('Arial',100,'bold')
-font_gameover=pygame.font.SysFont('Arial',100,'bold')
-font_sound = pygame.font.SysFont('Arial', 32, 'bold')
-font_SpaceShip = pygame.font.SysFont('Arial', 32, 'bold')
-font_Success = pygame.font.SysFont('Arial', 32, 'bold')
+# Khởi tạo đối tượng SpaceShip
+MAIN_SPACE_SHIP = SpaceShip.SpaceShip(WIDTH/2, HEIGHT-100, 'images/spaceShips/arcade.png')
+GAME_CONTROL_KEYBOARD = 'Keyboard'
+GAME_CONTROL_MOUSE = 'Mouse'
+TRIPLE_BULLET_NO = 'No'
+TRIPLE_BULLET_YES = 'Yes'
 
+Game_Control = GAME_CONTROL_KEYBOARD
+TripleBullet = TRIPLE_BULLET_NO
 Rocket = MAIN_SPACE_SHIP
+# Khởi tạo danh sách UFO và Meteoric
+QuantityUfo =10
+ListUfo = [Aliens.Aliens() for _ in range(QuantityUfo )]
+ListMeteoric = [Meteoric.Meteoric() for _ in range(QuantityUfo)]
+# Hàm để vẽ các phần tử trên màn hình
+def draw_elements(score, Number_livetree):
+    screen.blit(background, (0, 0))
+    for i in range(Number_livetree):
+        screen.blit(livetree, (i*50+1, 1))
+    img = font.render(f'Score: {score}', True, 'red')
+    screen.blit(img, (10, 50))
 
-def Draw_BackGround():
-    screen.blit(BackGround, (0,BG_Move_Y) )
-    screen.blit(BackGround, (0, -788 + BG_Move_Y) )
+# Xử lý sự kiện
+def handle_events():
+    global running
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
 
-    img=font.render(f'Score:{Score}',True,'red')
-    screen.blit(img,(10,50))
-    screen.blit(livetree,(1,1))
-    
-    MAIN_SPACE_SHIP.DisPlayRocket()
-    pygame.display.update()
+# Hàm chính của trò chơi
 
-    
-def RocketShoot():
+def main():
+    Score = 0
+    Number_livetree =3
+
+    NumberUfo = 0
+    # QuantityUfo =2
+
     Bullet_Color = 'Yellow'
     Bull = Bullet.Bullet()
     BullL = Bullet.Bullet()
@@ -63,13 +74,23 @@ def RocketShoot():
     BullL.Bullet = pygame.image.load("images/bullets/yellowbullet/yellowbulletR.png").convert_alpha()
     BullR.Type = 'R'
 
-    if Game_Control == 'Keyboard':
+    global running
+    running = True
+    FPS = 60
+    clock = pygame.time.Clock()
+    while running:
+        clock.tick(FPS)
+        handle_events()
+        draw_elements(Score, Number_livetree)
+        Rocket.MoveRocket(GAME_CONTROL_KEYBOARD)
+        Rocket.DisPlayRocket()
+        if Game_Control == GAME_CONTROL_KEYBOARD:
             Button = pygame.key.get_pressed()
-            if (Button[pygame.K_SPACE]) and TripleBullet == 'No':
+            if (Button[pygame.K_SPACE]) and TripleBullet == TRIPLE_BULLET_NO:
                 if Bull.Get_Status() == 'Free':
                     Bull = Rocket.PrepareBullet(Bull, Bullet_Color)
                 Rocket.Shoot(Bull, Bullet_Color)
-            if (Button[pygame.K_SPACE]) and TripleBullet == 'Yes':
+            if (Button[pygame.K_SPACE]) and TripleBullet == TRIPLE_BULLET_YES:
                 if Bull.Get_Status() == 'Free':
                     Bull = Rocket.PrepareBullet(Bull, Bullet_Color)              
                 if BullL.Get_Status() == 'Free':
@@ -80,46 +101,59 @@ def RocketShoot():
                     Rocket.Shoot(Bull, Bullet_Color)
                     Rocket.Shoot(BullL, Bullet_Color)
                     Rocket.Shoot(BullR, Bullet_Color)
-    if Game_Control == 'Mouse':            
-        Mouse = pygame.mouse.get_pressed()
-        if (Mouse[0]) and TripleBullet == 'No':
-            if Bull.Get_Status() == 'Free':
-                Bull = Rocket.PrepareBullet(Bull, Bullet_Color)
-            Rocket.Shoot(Bull, Bullet_Color)
-        if (Mouse[0]) and TripleBullet == 'Yes':
-            if Bull.Get_Status() == 'Free':
-                Bull = Rocket.PrepareBullet(Bull, Bullet_Color)              
-            if BullL.Get_Status() == 'Free':
-                BullL = Rocket.PrepareBullet(BullL, Bullet_Color)          
-            if BullR.Get_Status() == 'Free':
-                BullR = Rocket.PrepareBullet(BullR, Bullet_Color)
-            if Bull.Get_Status() == 'Ready' and BullL.Get_Status() == 'Ready' and BullR.Get_Status() == 'Ready':
+        
+        if Game_Control == GAME_CONTROL_MOUSE:            
+            Mouse = pygame.mouse.get_pressed()
+            if (Mouse[0]) and TripleBullet == TRIPLE_BULLET_NO:
+                if Bull.Get_Status() == 'Free':
+                    Bull = Rocket.PrepareBullet(Bull, Bullet_Color)
                 Rocket.Shoot(Bull, Bullet_Color)
-                Rocket.Shoot(BullL, Bullet_Color)
-                Rocket.Shoot(BullR, Bullet_Color)
+            if (Mouse[0]) and TripleBullet == TRIPLE_BULLET_YES:
+                if Bull.Get_Status() == 'Free':
+                    Bull = Rocket.PrepareBullet(Bull, Bullet_Color)              
+                if BullL.Get_Status() == 'Free':
+                    BullL = Rocket.PrepareBullet(BullL, Bullet_Color)          
+                if BullR.Get_Status() == 'Free':
+                    BullR = Rocket.PrepareBullet(BullR, Bullet_Color)
+                if Bull.Get_Status() == 'Ready' and BullL.Get_Status() == 'Ready' and BullR.Get_Status() == 'Ready':
+                    Rocket.Shoot(Bull, Bullet_Color)
+                    Rocket.Shoot(BullL, Bullet_Color)
+                    Rocket.Shoot(BullR, Bullet_Color)
 
-if __name__ == '__main__':
-    run =True
-    FPS = 60
-    clock = pygame.time.Clock()
+        for i in range(QuantityUfo-NumberUfo):
+            ListUfo[i].DisPlayAliens()
+        for i in range(QuantityUfo):
+            ListMeteoric[i]= ListUfo[i].PrepareMeteoric(ListMeteoric[i], Rocket)
+            ListUfo[i].Shoot(ListMeteoric[i])
 
-    while run:
-        clock.tick(FPS)
-        Draw_BackGround()
-        RocketShoot()
+            if ListUfo[i].Status == 'Live':
+                distanceUFO = math.sqrt( (( Bull.Get_x() - ListUfo[i].Get_x() )**2) + (( Bull.Get_y() - ListUfo[i].Get_y() )**2) )
+                if distanceUFO < 40 and Bull.Get_y() >= 0 and Bull.Get_y() <= HEIGHT and ListUfo[i].x >= 0 and ListUfo[i].x <= WIDTH  :
+                    Bull.x, Bull.y = -100, -100
+                    Score += 1
+                    ListUfo[i].Status = 'Die'
+                    ListUfo[i].x = -100
+                    ListUfo[i].y = -100
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    run = False
-        MAIN_SPACE_SHIP.MoveRocket(Game_Control)
+                    NumberUfo += 1
+                    # QuantityUfo-=1
+                    print("Stage", 'UFO: ', NumberUfo)
+                    print(distanceUFO)
 
+            distaceRocket = math.sqrt( (( ListMeteoric[i].Get_x() - Rocket.Get_x() )**2) + (( ListMeteoric[i].Get_y() - Rocket.Get_y() )**2) )
+            if distaceRocket < 30 and ListUfo[i].Status == 'Live':
+                    Number_livetree -= 1
+                    ListMeteoric[i].x = -100
+                    ListMeteoric[i].y = -100
+       
+
+            
+            
+                    
         pygame.display.update()
+    
 
 
-
-
-
-
+# Chạy trò chơi
+if __name__ == '__main__':
+    main()

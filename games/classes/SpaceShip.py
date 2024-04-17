@@ -4,12 +4,12 @@ import math
 from pygame import mixer
 from classes import Bullet
 import time
-WIDTH = 788
+WIDTH = 1300
 HEIGHT = 788
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.mixer.pre_init(41000,-16,2,2048)
 """ Tạo đối tượng SpaceShip"""
-class SpaceShip():
+class SpaceShip(pygame.sprite.Sprite):
     # Khởi tạo tọa độ ban đầu và load hình ảnh của tàu vũ trụ
     def __init__ (self, x = 700, y = 680, name = ""):
         self.x = x
@@ -32,7 +32,7 @@ class SpaceShip():
         if Game_Control == 'Mouse':
             pos = pygame.mouse.get_pos() # trả về tọa độ con trỏ chuột
             distance = math.sqrt( (( pos[0] - self.x )**2) + (( pos[1] - self.y )**2) )
-            if pos[0] >= 0 and pos[0] <= HEIGHT and pos[1] >= 0 and pos[1] <= HEIGHT: 
+            if pos[0] >= 0 and pos[0] <= WIDTH and pos[1] >= 0 and pos[1] <= HEIGHT: 
                 if distance > 1:
                     if self.x < pos[0] and self.y > pos[1]:
                         self.x += 10
@@ -116,11 +116,10 @@ class SpaceShip():
                 Bull.x = -100
                 Bull.y = -100
 
-            while Bull.Get_Status() == 'Ready':
+            if Bull.Get_Status() == 'Ready':
                 Bull.y -= 30
                 Bull.DisPlayBullet()
-                if Bull.Get_y() < 0:
-                    break
+               
         elif Bull.Type == 'L':
             if Bull.Get_y() < 0:
                 Bull.Status = 'Free'
@@ -135,12 +134,11 @@ class SpaceShip():
                 Bull.Type = 'L'
                 Bull.x = -100
                 Bull.y = -100
-            while Bull.Get_Status() == 'Ready':
+            if Bull.Get_Status() == 'Ready':
                 Bull.y -= 20
                 Bull.x -= 15
                 Bull.DisPlayBullet()
-                if Bull.Get_y() < 0:
-                    break
+                
 
         elif Bull.Type == 'R':
             if Bull.Get_y() < 0:
@@ -156,12 +154,12 @@ class SpaceShip():
                 Bull.Type = 'R'
                 Bull.x = -100
                 Bull.y = -100
-            while Bull.Get_Status() == 'Ready':
+            if Bull.Get_Status() == 'Ready':
                 Bull.y -= 20
                 Bull.x += 15
                 Bull.DisPlayBullet()
-                if Bull.Get_y() < 0:
-                    break
+                
+        
 
     
     def Get_x(self):

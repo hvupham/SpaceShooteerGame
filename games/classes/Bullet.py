@@ -2,7 +2,10 @@ import pygame
 
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
-screen = pygame.display.set_mode((1400, 788))
+WIDTH = 1300
+HEIGHT = 788
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.mixer.pre_init(41000,-16,2,2048)
 def collide(obj1, obj2):
     offset_x = obj2.x - obj1.x
     offset_y = obj2.y - obj1.y
