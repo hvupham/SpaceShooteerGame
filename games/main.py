@@ -19,6 +19,7 @@ pygame.mixer.pre_init(41000,-16,2,2048)
 
 # Load hình ảnh và âm thanh
 background = pygame.image.load("images/backgrounds/bg.png").convert_alpha()
+background1 = pygame.image.load("images/backgrounds/bg2.png").convert_alpha()
 powerup = pygame.image.load("images/power-item/lightning.png").convert_alpha()
 livetree = pygame.image.load("images/power-item/livetree.png").convert_alpha()
 # Khởi tạo font
@@ -39,13 +40,18 @@ QuantityUfo =10
 ListUfo = [Aliens.Aliens() for _ in range(QuantityUfo )]
 ListMeteoric = [Meteoric.Meteoric() for _ in range(QuantityUfo)]
 # Hàm để vẽ các phần tử trên màn hình
-def draw_elements(score, Number_livetree):
+def draw_elements(score, Number_livetree, background):
     screen.blit(background, (0, 0))
     for i in range(Number_livetree):
         screen.blit(livetree, (i*50+1, 1))
     img = font.render(f'Score: {score}', True, 'red')
     screen.blit(img, (10, 50))
 
+
+font_stage=pygame.font.SysFont('Arial',100,'bold')
+def Display_Stage(Stage):
+    img = font_stage.render(f'STAGE : {Stage}', True, 'red')
+    screen.blit(img, (550,300))
 # Xử lý sự kiện
 def handle_events():
     global running
@@ -64,7 +70,7 @@ def main():
 
     NumberUfo = 0
     # QuantityUfo =2
-
+    Stage =1
     Bullet_Color = 'Yellow'
     Bull = Bullet.Bullet()
     BullL = Bullet.Bullet()
@@ -81,7 +87,7 @@ def main():
     while running:
         clock.tick(FPS)
         handle_events()
-        draw_elements(Score, Number_livetree)
+        draw_elements(Score, Number_livetree,background)
         Rocket.MoveRocket(GAME_CONTROL_KEYBOARD)
         Rocket.DisPlayRocket()
         if Game_Control == GAME_CONTROL_KEYBOARD:
@@ -120,34 +126,44 @@ def main():
                     Rocket.Shoot(BullL, Bullet_Color)
                     Rocket.Shoot(BullR, Bullet_Color)
 
-        for i in range(QuantityUfo-NumberUfo):
-            ListUfo[i].DisPlayAliens()
-        for i in range(QuantityUfo):
-            ListMeteoric[i]= ListUfo[i].PrepareMeteoric(ListMeteoric[i], Rocket)
-            ListUfo[i].Shoot(ListMeteoric[i])
 
-            if ListUfo[i].Status == 'Live':
-                distanceUFO = math.sqrt( (( Bull.Get_x() - ListUfo[i].Get_x() )**2) + (( Bull.Get_y() - ListUfo[i].Get_y() )**2) )
-                if distanceUFO < 40 and Bull.Get_y() >= 0 and Bull.Get_y() <= HEIGHT and ListUfo[i].x >= 0 and ListUfo[i].x <= WIDTH  :
-                    Bull.x, Bull.y = -100, -100
-                    Score += 1
-                    ListUfo[i].Status = 'Die'
-                    ListUfo[i].x = -100
-                    ListUfo[i].y = -100
+        if Stage ==1:
 
-                    NumberUfo += 1
-                    # QuantityUfo-=1
-                    print("Stage", 'UFO: ', NumberUfo)
-                    print(distanceUFO)
+            for i in range(QuantityUfo):
+                if ListUfo[i].Status == 'Live':
+                    ListUfo[i].DisPlayAliens()
+            for i in range(QuantityUfo):
+                ListMeteoric[i]= ListUfo[i].PrepareMeteoric(ListMeteoric[i], Rocket)
+                ListUfo[i].Shoot(ListMeteoric[i])
+                if ListUfo[i].Status == 'Live':
+                    distanceUFO = math.sqrt( (( Bull.Get_x() - ListUfo[i].Get_x() )**2) + (( Bull.Get_y() - ListUfo[i].Get_y() )**2) )
+                    if distanceUFO < 40 and Bull.Get_y() >= 0 and Bull.Get_y() <= HEIGHT and ListUfo[i].x >= 0 and ListUfo[i].x <= WIDTH  :
+                        Bull.x, Bull.y = -100, -100
+                        Score += 1
+                        ListUfo[i].Status = 'Die'
+                        ListUfo[i].x = -100
+                        ListUfo[i].y = -100
 
-            distaceRocket = math.sqrt( (( ListMeteoric[i].Get_x() - Rocket.Get_x() )**2) + (( ListMeteoric[i].Get_y() - Rocket.Get_y() )**2) )
-            if distaceRocket < 30 and ListUfo[i].Status == 'Live':
-                    Number_livetree -= 1
-                    ListMeteoric[i].x = -100
-                    ListMeteoric[i].y = -100
-       
+                        NumberUfo += 1
+                        # QuantityUfo-=1
+                        print("Stage", 'UFO: ', NumberUfo)
+                        print(distanceUFO)
 
-            
+                distaceRocket = math.sqrt( (( ListMeteoric[i].Get_x() - Rocket.Get_x() )**2) + (( ListMeteoric[i].Get_y() - Rocket.Get_y() )**2) )
+                if distaceRocket < 30 and ListUfo[i].Status == 'Live':
+                        Number_livetree -= 1
+                        ListMeteoric[i].x = -100
+                        ListMeteoric[i].y = -100
+            if NumberUfo == QuantityUfo:
+                Stage=2
+        if Stage == 2:
+            Display_Stage(Stage)
+            for i in range(QuantityUfo):
+                if ListUfo[i].Status == 'Die':
+                    ListUfo[i].DisPlayAliens()
+        
+
+                
             
                     
         pygame.display.update()
