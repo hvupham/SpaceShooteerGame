@@ -17,7 +17,7 @@ class SpaceShip(pygame.sprite.Sprite):
         self.Rocket = pygame.image.load(name).convert_alpha()
     
     # Tạo phương thức để xử lý việc di chuyển của tàu vũ trụ (điều khiển bằng bàn phím hoặc chuột)
-    def MoveRocket(self, Game_Control = 'Mouse'):
+    def MoveRocket(self, Game_Control ):
         if Game_Control == 'Keyboard':
             Button = pygame.key.get_pressed()
             # Trong phương thức MoveRocket()
