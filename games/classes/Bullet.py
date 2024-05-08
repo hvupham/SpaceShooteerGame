@@ -6,31 +6,71 @@ WIDTH = 1300
 HEIGHT = 788
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.mixer.pre_init(41000,-16,2,2048)
-def collide(obj1, obj2):
-    offset_x = obj2.x - obj1.x
-    offset_y = obj2.y - obj1.y
-    return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
-""" Tạo đối tượng bullet"""
+
 class Bullet():
-    def __init__ (self, x = -100, y = -100, Status = 'Free', Type = 'S'): # Khởi tạo tọa độ ban đầu, trạng thái, loại đạn
+    """
+    Class Bullet:
+    Đại diện cho viên đạn trong trò chơi.
+
+    Attributes:
+        x (int): Tọa độ x của viên đạn.
+        y (int): Tọa độ y của viên đạn.
+        Bullet (pygame.Surface): Hình ảnh của viên đạn.
+        Status (str): Trạng thái của viên đạn ('Free' hoặc 'Used').
+        Type (str): Loại của viên đạn ('S' cho pháp sư, 'B' cho bảo vệ, 'E' cho quái vật).
+
+    Methods:
+        DisPlayBullet(): Hiển thị viên đạn trên màn hình.
+        off_screen(height): Kiểm tra xem viên đạn có ra khỏi màn hình không.
+        collision(obj): Kiểm tra va chạm của viên đạn với một đối tượng khác.
+        Get_Status(): Trả về trạng thái của viên đạn.
+        Get_x(): Trả về tọa độ x của viên đạn.
+        Get_y(): Trả về tọa độ y của viên đạn.
+    """
+    def __init__ (self, x = -100, y = -100, Status = 'Free', Type = 'S'): 
+        """
+        Hàm khởi tạo: 
+        Khởi tạo một đối tượng viên đạn với các thuộc tính mặc định hoặc đã chỉ định.
+
+        Args:
+            x (int): Tọa độ x ban đầu của viên đạn.
+            y (int): Tọa độ y ban đầu của viên đạn.
+            Status (str): Trạng thái ban đầu của viên đạn ('Free' hoặc 'Used').
+            Type (str): Loại của viên đạn ('S' cho pháp sư, 'B' cho bảo vệ, 'E' cho quái vật).
+        """
         self.x = x
         self.y = y
-        self.Bullet = pygame.image.load("images/bullets/yellowbullet/yellowbulletS.png").convert_alpha()
+        self.Bullet = pygame.image.load("images/bullets/bull/bullS.png").convert_alpha()
         self.Status = Status
         self.Type = Type
     def DisPlayBullet(self):
+        """
+        Phương thức DisPlayBullet():
+            Hiển thị viên đạn trên màn hình.
+        """
         screen.blit(self.Bullet, (self.x, self.y))
-        
-    def off_screen(self, height):
-        return not(self.y <= height and self.y >= 0)
-    def collision(self, obj):
-        return collide(self, obj)
     def Get_Status(self):
+        """
+        Phương thức Get_Status():
+            Trả về trạng thái của viên đạn.
+        """
         return self.Status
     def Get_x(self):
+        """
+        Trả về tọa độ x của viên đạn.
+
+        Returns:
+            int: Tọa độ x của viên đạn.
+        """
         return self.x
     def Get_y (self):
+        """
+        Trả về tọa độ y của viên đạn.
+
+        Returns:
+            int: Tọa độ y của viên đạn.
+        """
         return self.y
 
 
-
+print(Bullet.__doc__)

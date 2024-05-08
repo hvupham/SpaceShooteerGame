@@ -1,22 +1,11 @@
-import pygame , time, sys
-import random
-import math
-from pygame import mixer
-import time
-from classes import Bullet
-pygame.mixer.pre_init(44100, -16, 2, 2048)
+import pygame 
 pygame.init()
 screen = pygame.display.set_mode((1400, 788))
 
-# Load hình ảnh con chuột
 NewCursor = pygame.image.load("images/setting-items/newcursor.png")
 def Draw_MouseCursor():
-    # if Game_Control == 'Mouse' and Game_Menu == False and InGame == True and OptionStatus == False and Game_Over == False and Game_Win == False:
-    #     screen.blit( NewCursor, (-100, -100) )
-    # else:
     pos = pygame.mouse.get_pos()
     screen.blit( NewCursor, (pos[0] - 12, pos[1] - 3) )
-
 class Button():
     def __init__(self, x, y, image):
         self.x = x
@@ -40,4 +29,9 @@ class Button():
         if Mouse[0] == 0:
             self.clicked = False       
         return IsClick
+    def Get_x(self):
+        return self.x
+    def Get_y (self):
+        return self.y
+
 pygame.init()
