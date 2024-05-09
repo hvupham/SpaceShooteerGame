@@ -16,7 +16,7 @@ Hằng số:
 
 import pygame 
 import random
-import Meteoric 
+from classes import Meteoric
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 WIDTH = 1300
@@ -142,5 +142,6 @@ class Aliens():
         """
         self.UFO = pygame.image.load("images/orther/boom.png").convert_alpha()
         self.DisPlayAliens()
+
 
 

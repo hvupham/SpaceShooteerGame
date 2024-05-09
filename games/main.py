@@ -93,7 +93,6 @@ if True:
 # Khởi tạo danh sách UFO và Meteoric
 QuantityUfo =10
 QuantityUfo1 =15
-
 ListUfo = [Aliens.Aliens() for _ in range(QuantityUfo )]
 ListUfo1 = [Aliens.Aliens(-100,-100,"images/ailens/enemy.png") for _ in range(QuantityUfo1 )]
 ListMeteoric = [Meteoric.Meteoric() for _ in range(QuantityUfo)]
@@ -275,7 +274,7 @@ def main():
     NumberUfo1 = 0
     Max_score = 0
 
-    Game_Control = GAME_CONTROL_MOUSE
+    Game_Control = GAME_CONTROL_KEYBOARD
     meteoric1 ="images/meteorics/meteoric1.png"
     meteoric1L ="images/meteorics/meteoric1L.png"
     meteoric1R ="images/meteorics/meteoricR.png"
@@ -764,4 +763,3 @@ def main():
         pygame.display.update()
 if __name__ == '__main__':
     main()
-    print (Aliens.__doc__)

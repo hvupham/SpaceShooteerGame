@@ -76,5 +76,3 @@ class Meteoric():
         return self.Type
 
 
-
-

@@ -73,4 +73,4 @@ class Bullet():
         return self.y
 
 
-print(Bullet.__doc__)
+

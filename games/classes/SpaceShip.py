@@ -1,9 +1,7 @@
-import pygame , time, sys
+import pygame 
 import random
 import math
-from pygame import mixer
 from classes import Bullet
-import time
 WIDTH = 1300
 HEIGHT = 788
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -213,3 +211,4 @@ class SpaceShip(pygame.sprite.Sprite):
 
 
 
+print(SpaceShip.__doc__)
